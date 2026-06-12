@@ -27,13 +27,21 @@ Remember the one rule that trips people up: **only `plugin.json` goes inside `.c
  
 ### Steps
  
-1. Create `.claude-plugin/plugin.json` with a `name` and a `version`.
+1. Create `.claude-plugin/plugin.json` with a `name` and a `version`. A minimal one looks like:
+```json
+   { "name": "qa-kit", "version": "0.1.0" }
+```
 2. Make the component folders and move the pieces into place: `building-blocks/summarize-changes.md` → `commands/`, and `building-blocks/code-reviewer.md` → `agents/`. Delete the empty `building-blocks/` folder afterwards.
 3. If a component runs a bundled script, reference it through `${CLAUDE_PLUGIN_ROOT}` — never a hardcoded path.
 4. Replace this README with one that describes *your* plugin: what it does, the commands it adds, how to use them.
 5. From the repo root, load it with `claude --plugin-dir .`. Run the command as `/your-plugin:summarize-changes`, and trigger the subagent by asking Claude to review your recent changes (it should reach for `code-reviewer`). Use `/reload-plugins` after edits.
 6. Commit and push.
-### Done when
+
+### How you'll know it's done
  
-- `claude --plugin-dir .` loads the plugin, the command runs by its namespaced name, and the reviewer subagent fires when you ask for a review.
-- The repo holds a valid `.claude-plugin/plugin.json`, the `commands/` and `agents/` folders, and a README describing the plugin.
+This repo has an automated check — **Validate plugin** — that runs every time you push. It's **red right now**, because there's no plugin yet. As you build, commit and push your work; the check turns **green** once the plugin is structured correctly:
+ 
+- `.claude-plugin/plugin.json` exists, is valid JSON, and has a `name`
+- the component folders sit at the root, not inside `.claude-plugin/`
+- at least one component is present
+A green check means the structure is right. To confirm it actually *works*, load the plugin locally with `claude --plugin-dir .` and run each piece — the command by its namespaced name, the subagent by asking for a review.
